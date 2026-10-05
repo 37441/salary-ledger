@@ -35,11 +35,24 @@ class SalaryLedgerApp extends StatelessWidget {
 
   const SalaryLedgerApp({super.key, required this.store});
 
+  /// 根 Flutter 入口：跟随主题设置系统状态栏样式（浅色主题深图标，深色主题白图标）。
+  static void applyStatusBarStyle(int theme) {
+    final dark = AppThemes.isDark(theme);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: dark ? Brightness.light : Brightness.dark,
+      statusBarBrightness: dark ? Brightness.dark : Brightness.light,
+      systemNavigationBarColor: Colors.black,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<int>(
       valueListenable: store.themeNotifier,
       builder: (context, theme, _) {
+        applyStatusBarStyle(theme);
         return ValueListenableBuilder<double>(
           valueListenable: store.fontScaleNotifier,
           builder: (context, fs, _) {
@@ -120,12 +133,8 @@ class _SplashGateState extends State<SplashGate> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: pageColor(context),
-      body: Column(
-        children: [
-          const StatusBarPad(Colors.black),
-          Expanded(
-            child: Center(
-              child: TweenAnimationBuilder<double>(
+      body: Center(
+        child: TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0.4, end: 1.0),
                 duration: const Duration(milliseconds: 700),
                 curve: Curves.easeOutBack,
@@ -154,10 +163,7 @@ class _SplashGateState extends State<SplashGate> {
                   ],
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
+        ),
     );
   }
 }
@@ -256,7 +262,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   String get _subtitle {
-    if (_tab == 3) return '';
+    if (_tab == 3) return '外观 · 工资 · 数据 · 导航栏';
     final s = _calc.summarizeMonth(_year, _month);
     switch (_tab) {
       case 0:
@@ -280,7 +286,6 @@ class _HomePageState extends State<HomePage> {
             Positioned.fill(
               child: Column(
                 children: [
-                  const StatusBarPad(Colors.black),
                   _toolbar(),
                   Expanded(child: _pageStack()),
                 ],
@@ -346,11 +351,13 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /// 顶栏：背景跟随主题，内容延伸到状态栏（Android 15 edge-to-edge），状态栏图标颜色由主题驱动。
   Widget _toolbar() {
     final tm = textMain(context);
     final mtd = textMuted(context);
+    final subtitle = _subtitle;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(color: pageColor(context)),
       child: Row(
         children: [
@@ -363,16 +370,17 @@ class _HomePageState extends State<HomePage> {
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
                   child: Text(_title,
+                      maxLines: 1,
                       style: TextStyle(
                           fontSize: 22,
                           color: tm,
                           fontWeight: FontWeight.w700)),
                 ),
-                if (_subtitle.isNotEmpty)
+                if (subtitle.isNotEmpty)
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
-                    child: Text(_subtitle,
+                    child: Text(subtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 12, color: mtd)),
@@ -442,12 +450,14 @@ class _HomePageState extends State<HomePage> {
     );
 
     final glass = widget.store.glassNav;
-    final bar = Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-      color: glass
-          ? panelColor(context).withValues(alpha: 0.68)
-          : panelColor(context),
-      child: content,
+    final panel = panelColor(context);
+    final bar = ValueListenableBuilder<double>(
+      valueListenable: widget.store.glassOpacityNotifier,
+      builder: (_, opacity, __) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+        color: glass ? panel.withValues(alpha: opacity) : panel,
+        child: content,
+      ),
     );
 
     final capsule = Container(

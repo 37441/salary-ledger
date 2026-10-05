@@ -110,21 +110,6 @@ void showAppToast(BuildContext context, String msg) {
   });
 }
 
-/// 顶部系统状态栏区域（Android 15 强制 edge-to-edge，需自行绘制底色）。
-class StatusBarPad extends StatelessWidget {
-  final Color color;
-
-  const StatusBarPad(this.color, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: color,
-      height: MediaQuery.of(context).padding.top,
-    );
-  }
-}
-
 /// 圆角卡片容器（大圆角扁平风，参考设计图：16-24px）。
 class Panel extends StatelessWidget {
   final Widget child;
@@ -338,17 +323,17 @@ class YearMetric extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+      margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
       decoration: BoxDecoration(
         color: panelColor(context),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           PanelText(label, size: 11, color: textMuted(context), align: TextAlign.center),
-          const SizedBox(height: 2),
+          const SizedBox(height: 1),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: PanelText(value, size: 15, color: valueColor, align: TextAlign.center),

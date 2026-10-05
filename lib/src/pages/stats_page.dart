@@ -42,7 +42,7 @@ class _StatsPageState extends State<StatsPage>
     super.build(context);
     final s = widget.calc.summarizeMonth(widget.year, widget.month);
     return ListView(
-      padding: const EdgeInsets.only(bottom: 28),
+      padding: const EdgeInsets.only(bottom: 96),
       children: [
         HeroCard(
           '月度小结 实算',
@@ -89,11 +89,12 @@ class _StatsPageState extends State<StatsPage>
   Widget _salaryInfoCard(MonthSummary s) {
     final tm = textMain(context);
     return Panel(
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           PanelText('工资信息', size: 15, color: textMain(context)),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           _metricGrid([
             YearMetric('底薪', Fmt.money(widget.store.baseSalary), primary(context)),
             YearMetric('绩效', '${Fmt.money(widget.store.performanceRate)}%', primary(context)),
@@ -118,9 +119,9 @@ class _StatsPageState extends State<StatsPage>
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 2,
-      childAspectRatio: 1.85,
+      mainAxisSpacing: 1,
+      crossAxisSpacing: 1,
+      childAspectRatio: 2.1,
       children: metrics,
     );
   }

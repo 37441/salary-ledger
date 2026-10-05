@@ -38,7 +38,7 @@ class _YearPageState extends State<YearPage> with AutomaticKeepAliveClientMixin 
     super.build(context);
     final ys = widget.calc.summarizeYear(widget.year);
     return ListView(
-      padding: const EdgeInsets.only(bottom: 28),
+      padding: const EdgeInsets.only(bottom: 96),
       children: [
         HeroCard(
           '年度小结',
@@ -151,13 +151,38 @@ class _YearPageState extends State<YearPage> with AutomaticKeepAliveClientMixin 
                 ),
               ],
             ),
-            AdaptiveRow([
-              InfoBlock('加班时长', '${Fmt.hours(ms.totalHours)}h'),
-              InfoBlock('加班费', Fmt.money(ms.overtimePay)),
-              InfoBlock('请假', '${Fmt.hours(ms.leaveHours)}h'),
-            ], gap: 4),
+            const SizedBox(height: 2),
+            // 三指标一行（窄屏也不换行）
+            Row(
+              children: [
+                _monthMetric('加班时长', '${Fmt.hours(ms.totalHours)}h'),
+                _monthMetric('加班费', Fmt.money(ms.overtimePay)),
+                _monthMetric('请假', '${Fmt.hours(ms.leaveHours)}h'),
+              ],
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _monthMetric(String label, String value) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+              maxLines: 1,
+              style: TextStyle(fontSize: 11, color: textMuted(context))),
+          const SizedBox(height: 1),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(value,
+                maxLines: 1,
+                style: TextStyle(fontSize: 13, color: textMain(context))),
+          ),
+        ],
       ),
     );
   }

@@ -17,6 +17,7 @@ class AppStore {
   static const String _kMigrated = 'legacy_migrated';
   static const String _kFontScale = 'fontScale';
   static const String _kGlassNav = 'glassNav';
+  static const String _kGlassOpacity = 'glassOpacity';
 
   /// 主题索引变化通知（驱动整个 App 换肤）。
   final ValueNotifier<int> themeNotifier = ValueNotifier<int>(0);
@@ -44,6 +45,16 @@ class AppStore {
   /// 液态玻璃导航栏开关。
   bool glassNav = true;
 
+  /// 液态玻璃透明度（0.3~0.9）。
+  final ValueNotifier<double> glassOpacityNotifier = ValueNotifier<double>(0.68);
+  double _glassOpacity = 0.68;
+  double get glassOpacity => _glassOpacity;
+  set glassOpacity(double value) {
+    if ((_glassOpacity - value).abs() < 0.01) return;
+    _glassOpacity = value;
+    glassOpacityNotifier.value = value;
+  }
+
   double baseSalary = 3000.0;
   double performanceRate = 25.0;
   Map<String, DayRecord> records = {};
@@ -67,6 +78,8 @@ class AppStore {
     performanceRate = _prefs.getDouble(_kPerf) ?? 25.0;
     _fontScale = _prefs.getDouble(_kFontScale) ?? 1.0;
     glassNav = _prefs.getBool(_kGlassNav) ?? true;
+    _glassOpacity = _prefs.getDouble(_kGlassOpacity) ?? 0.68;
+    glassOpacityNotifier.value = _glassOpacity;
     fontScaleNotifier.value = _fontScale;
     _theme = _prefs.getInt(_kTheme) ?? 0;
     if (_theme < 0 || _theme >= 7) _theme = 0;
@@ -82,6 +95,7 @@ class AppStore {
     _prefs.setDouble(_kPerf, performanceRate);
     _prefs.setDouble(_kFontScale, fontScale);
     _prefs.setBool(_kGlassNav, glassNav);
+    _prefs.setDouble(_kGlassOpacity, _glassOpacity);
     _prefs.setInt(_kTheme, theme);
     _prefs.setString(_kRecords, _encodeRecords());
     _prefs.setString(_kDeductions, _encodeFinance(deductions));
@@ -160,6 +174,7 @@ class AppStore {
         'theme': theme,
         'fontScale': fontScale,
         'glassNav': glassNav,
+        'glassOpacity': glassOpacity,
         'records': {for (final e in records.entries) e.key: e.value.toJson()},
         'deductions': deductions,
         'subsidies': subsidies,
@@ -175,6 +190,8 @@ class AppStore {
       if (t is int && t >= 0 && t < 7) theme = t;
       fontScale = (obj['fontScale'] as num?)?.toDouble() ?? 1.0;
       glassNav = obj['glassNav'] as bool? ?? true;
+      _glassOpacity = (obj['glassOpacity'] as num?)?.toDouble() ?? 0.68;
+      glassOpacityNotifier.value = _glassOpacity;
       records = _decodeRecords(jsonEncode(obj['records'] ?? {}));
       deductions = _decodeFinance(jsonEncode(obj['deductions'] ?? {}));
       subsidies = _decodeFinance(jsonEncode(obj['subsidies'] ?? {}));

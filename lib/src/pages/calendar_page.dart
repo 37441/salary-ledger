@@ -66,7 +66,7 @@ class _CalendarPageState extends State<CalendarPage>
     final s = widget.calc.summarizeMonth(widget.year, widget.month);
     return ListView(
       controller: _scroll,
-      padding: const EdgeInsets.only(bottom: 28),
+      padding: const EdgeInsets.only(bottom: 96),
       children: [
         _summaryCard(s),
         _monthControls(),

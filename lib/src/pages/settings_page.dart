@@ -38,7 +38,7 @@ class _SettingsPageState extends State<SettingsPage>
   Widget build(BuildContext context) {
     super.build(context);
     return ListView(
-      padding: const EdgeInsets.only(bottom: 28),
+      padding: const EdgeInsets.only(bottom: 96),
       children: [
                   Panel(
                     child: Column(
@@ -96,6 +96,35 @@ class _SettingsPageState extends State<SettingsPage>
                           size: 12,
                           color: textMuted(context),
                         ),
+                        if (store.glassNav) ...[
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              const Icon(Icons.opacity, size: 16, color: Color(0xFF2B84BC)),
+                              const SizedBox(width: 8),
+                              PanelText('透明度', size: 13, color: textMain(context)),
+                              Expanded(
+                                child: Slider(
+                                  value: store.glassOpacity,
+                                  min: 0.3,
+                                  max: 0.9,
+                                  divisions: 12,
+                                  activeColor: accent(context),
+                                  onChanged: (v) {
+                                    store.glassOpacity = v;
+                                    _save();
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 44,
+                                child: Text('${(store.glassOpacity * 100).round()}%',
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(fontSize: 13, color: textMuted(context))),
+                              ),
+                            ],
+                          ),
+                        ],
                       ],
                     ),
                   ),
