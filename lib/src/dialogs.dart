@@ -208,27 +208,85 @@ Future<void> showDayDialog({
             ],
           ),
           const SizedBox(height: 12),
-          AdaptiveRow([
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                PanelText('加班小时', size: 13, color: textMuted(context)),
-                const SizedBox(height: 4),
-                AppInput(hoursCtrl),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                PanelText('请假小时', size: 13, color: textMuted(context)),
-                const SizedBox(height: 4),
-                AppInput(leaveCtrl),
-              ],
-            ),
-          ]),
+          // 加班/请假输入框强制同一行，两个输入框等宽。
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PanelText('加班小时', size: 13, color: textMuted(context)),
+                    const SizedBox(height: 4),
+                    AppInput(hoursCtrl),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PanelText('请假小时', size: 13, color: textMuted(context)),
+                    const SizedBox(height: 4),
+                    AppInput(leaveCtrl),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // 快捷录入选项：点击即写入并关闭弹窗。
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final o in const [
+                (label: '2h · 1.5倍', hours: 2.0, rate: 1.5),
+                (label: '3h · 1.5倍', hours: 3.0, rate: 1.5),
+                (label: '10h · 2倍', hours: 10.0, rate: 2.0),
+                (label: '11h · 2倍', hours: 11.0, rate: 2.0),
+                (label: '0h', hours: 0.0, rate: 0.0),
+              ])
+                Material(
+                  color: softPrimary(context),
+                  borderRadius: BorderRadius.circular(8),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      store.records[key] = DayRecord(
+                        hours: o.hours,
+                        rateOverride: o.rate,
+                      );
+                      store.save();
+                      Navigator.of(context).pop();
+                      onChanged();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      child: Text(
+                        o.label,
+                        style: TextStyle(fontSize: 13, color: accent(context), fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
           _SheetActions([
-            DialogButton('取消', const Color(0xFFF5F6F8), primary(context), () {
+            // 保存与取消互换位置（此页面要求）
+            DialogButton('保存', AppColors.save, Colors.white, () {
+              final h = _parseDouble(hoursCtrl.text, 0).clamp(0.0, 1e9);
+              final leave = _parseDouble(leaveCtrl.text, 0).clamp(0.0, 1e9);
+              store.records[key] = DayRecord(
+                hours: h.toDouble(),
+                leaveHours: leave.toDouble(),
+                // 与默认倍率一致则写 0（自动）；手动改过才固定写死。
+                rateOverride: selectedRate == rate ? 0.0 : selectedRate,
+              );
+              store.save();
               Navigator.of(context).pop();
+              onChanged();
             }),
             DialogButton('删除', const Color(0xFFFFEFF1), AppColors.danger, () {
               store.records.remove(key);
@@ -242,18 +300,8 @@ Future<void> showDayDialog({
               Navigator.of(context).pop();
               onChanged();
             }),
-            DialogButton('保存', AppColors.save, Colors.white, () {
-              final h = _parseDouble(hoursCtrl.text, 0).clamp(0.0, 1e9);
-              final leave = _parseDouble(leaveCtrl.text, 0).clamp(0.0, 1e9);
-              store.records[key] = DayRecord(
-                hours: h.toDouble(),
-                leaveHours: leave.toDouble(),
-                // 与默认倍率一致则写 0（自动）；手动改过才固定写死。
-                rateOverride: selectedRate == rate ? 0.0 : selectedRate,
-              );
-              store.save();
+            DialogButton('取消', const Color(0xFFF5F6F8), primary(context), () {
               Navigator.of(context).pop();
-              onChanged();
             }),
           ]),
         ],

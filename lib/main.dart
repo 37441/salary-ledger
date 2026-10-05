@@ -279,6 +279,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: pageColor(context),
+      // 键盘弹出时不收缩/移动主页布局（顶栏保持原位；弹窗在 Overlay 自行处理）
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         top: false,
         child: Stack(
