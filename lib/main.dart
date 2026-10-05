@@ -145,14 +145,14 @@ class _SplashGateState extends State<SplashGate> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                      width: 84,
-                      height: 84,
-                      decoration: BoxDecoration(
-                        color: AppThemes.primary[widget.store.theme],
-                        borderRadius: BorderRadius.circular(22),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(22),
+                      child: Image.asset(
+                        'assets/icon/ic_launcher.png',
+                        width: 84,
+                        height: 84,
+                        fit: BoxFit.cover,
                       ),
-                      child: const Icon(Icons.payments, size: 44, color: Colors.white),
                     ),
                     const SizedBox(height: 16),
                     Text('薪时记账',

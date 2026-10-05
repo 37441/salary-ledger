@@ -246,6 +246,7 @@ Future<void> showDayDialog({
                 (label: '3h · 1.5倍', hours: 3.0, rate: 1.5),
                 (label: '10h · 2倍', hours: 10.0, rate: 2.0),
                 (label: '11h · 2倍', hours: 11.0, rate: 2.0),
+                (label: '11h · 3倍', hours: 11.0, rate: 3.0),
                 (label: '0h', hours: 0.0, rate: 0.0),
               ])
                 Material(
