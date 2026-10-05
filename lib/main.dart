@@ -351,13 +351,15 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  /// 顶栏：背景跟随主题，内容延伸到状态栏（Android 15 edge-to-edge），状态栏图标颜色由主题驱动。
+  /// 顶栏：背景跟随主题，内容延伸到状态栏（edge-to-edge），
+  /// padding-top 适配状态栏（刘海）高度，避免与系统栏重叠。
   Widget _toolbar() {
     final tm = textMain(context);
     final mtd = textMuted(context);
     final subtitle = _subtitle;
+    final topPad = MediaQuery.of(context).padding.top;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: EdgeInsets.fromLTRB(16, topPad + 8, 16, 10),
       decoration: BoxDecoration(color: pageColor(context)),
       child: Row(
         children: [

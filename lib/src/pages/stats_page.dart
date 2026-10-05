@@ -114,16 +114,21 @@ class _StatsPageState extends State<StatsPage>
     );
   }
 
+  /// 与年度汇总同构的行式网格：每行 2 个 YearMetric，自然高度，数据密度一致。
   Widget _metricGrid(List<YearMetric> metrics) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 1,
-      crossAxisSpacing: 1,
-      childAspectRatio: 2.1,
-      children: metrics,
-    );
+    final rows = <Widget>[];
+    for (var i = 0; i < metrics.length; i += 2) {
+      rows.add(Row(
+        children: [
+          Expanded(child: metrics[i]),
+          if (i + 1 < metrics.length)
+            Expanded(child: metrics[i + 1])
+          else
+            const Expanded(child: SizedBox()),
+        ],
+      ));
+    }
+    return Column(children: rows);
   }
 
   Widget _overtimeExplainCard(
