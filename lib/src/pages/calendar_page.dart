@@ -308,11 +308,16 @@ class _CalendarPageState extends State<CalendarPage>
                 ),
                 SmallButton(
                   widget.multiSelectMode ? '完成' : '多选',
-                  softPrimary(context),
+                  // 多选状态：淡红色背景（醒目但不刺眼）；未多选：主题浅色。
+                  widget.multiSelectMode
+                      ? const Color(0xFFFFE4E8)
+                      : softPrimary(context),
                   () {
                     widget.onMultiSelectToggle(!widget.multiSelectMode);
                   },
-                  textColor: accent(context),
+                  textColor: widget.multiSelectMode
+                      ? const Color(0xFFC94F66)
+                      : accent(context),
                 ),
               ],
             ),
@@ -339,52 +344,45 @@ class _CalendarPageState extends State<CalendarPage>
                   ),
                 ),
               ),
-              // 类别选项栏：可点击选择（休息/倍率类别）
-              Material(
-                color: panelColor(context),
-                borderRadius: BorderRadius.circular(8),
-                child: InkWell(
+              // 类别选项栏：可点击选择（休息/倍率类别），宽度与操作按钮一致
+              SizedBox(
+                width: double.infinity,
+                child: Material(
+                  color: panelColor(context),
                   borderRadius: BorderRadius.circular(8),
-                  onTap: () {
-                    showBatchTypePicker(
-                      context: context,
-                      current: _typeLabel,
-                      onSelect: (v) => setState(() => _typeLabel = v),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: border(context)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            _typeLabel,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 12, color: textMain(context)),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      showBatchTypePicker(
+                        context: context,
+                        current: _typeLabel,
+                        onSelect: (v) => setState(() => _typeLabel = v),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: border(context)),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _typeLabel,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 12, color: textMain(context)),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 2),
-                        Icon(Icons.arrow_drop_down, size: 20, color: textMuted(context)),
-                      ],
+                          Icon(Icons.arrow_drop_down, size: 20, color: textMuted(context)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ], gap: 6),
-            // 点击提示
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(
-                '点击类别栏可选择：休息 / 工作日(1.5倍) / 周六日(2倍) / 节假日(3倍)',
-                style: TextStyle(fontSize: 11, color: textMuted(context)),
-              ),
-            ),
             const SizedBox(height: 8),
             AdaptiveRow([
               SmallButton('批量修改', AppColors.save, () {
