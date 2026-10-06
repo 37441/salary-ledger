@@ -64,9 +64,10 @@ class _CalendarPageState extends State<CalendarPage>
   Widget build(BuildContext context) {
     super.build(context);
     final s = widget.calc.summarizeMonth(widget.year, widget.month);
+    final keyboardInset = MediaQuery.of(context).viewInsets.bottom;
     return ListView(
       controller: _scroll,
-      padding: const EdgeInsets.only(bottom: 96),
+      padding: EdgeInsets.only(bottom: 96 + keyboardInset),
       children: [
         _summaryCard(s),
         _monthControls(),
@@ -334,6 +335,19 @@ class _CalendarPageState extends State<CalendarPage>
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                   style: TextStyle(fontSize: 14, color: textMain(context)),
+                  onTap: () {
+                    // 键盘弹出后自动滚动到菜单底部，让输入框露出键盘上方（顶栏保持不动）
+                    Future.delayed(const Duration(milliseconds: 350), () {
+                      if (!mounted) return;
+                      if (_scroll.hasClients) {
+                        _scroll.animateTo(
+                          _scroll.position.maxScrollExtent,
+                          duration: const Duration(milliseconds: 240),
+                          curve: Curves.easeOut,
+                        );
+                      }
+                    });
+                  },
                   decoration: InputDecoration(
                     hintText: '小时',
                     hintStyle: TextStyle(color: textMuted(context), fontSize: 12),
@@ -384,6 +398,36 @@ class _CalendarPageState extends State<CalendarPage>
               ),
             ], gap: 6),
             const SizedBox(height: 8),
+            // 快捷填写按钮（与工时弹窗一致），点击即批量应用
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final o in kQuickOptions)
+                  Material(
+                    color: softPrimary(context),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        _quickBatch(o.hours, o.rate);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        child: Text(
+                          o.label,
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: accent(context),
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
             AdaptiveRow([
               SmallButton('批量修改', AppColors.save, () {
                 final h = double.tryParse(_hoursCtrl.text.trim()) ?? 0;
@@ -406,6 +450,26 @@ class _CalendarPageState extends State<CalendarPage>
           ],
         ),
       );
+  }
+
+  /// 批量快捷填写：与工时弹窗的快捷按钮一致，对已选日期直接写入并结束多选。
+  void _quickBatch(double hours, double rate) {
+    final targets = List<String>.of(widget.selectedDates);
+    if (targets.isEmpty) {
+      showAppToast(context, '请先选择多个日期');
+      return;
+    }
+    widget.onExitMultiSelect();
+    for (final key in targets) {
+      widget.store.records[key] = DayRecord(
+        hours: hours,
+        holiday: rate == 3.0,
+        rateOverride: rate,
+      );
+    }
+    widget.store.save();
+    widget.onRefresh();
+    showAppToast(context, '批量快捷填写完成');
   }
 
   /// 批量修改/删除：进入操作前自动结束多选（需求 3）。

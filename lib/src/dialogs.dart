@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'holidays.dart';
 import 'models.dart';
 import 'storage.dart';
 import 'theme.dart';
 import 'widgets.dart';
+
+/// 工时弹窗与批量面板共用的快捷录入选项。
+const List<({String label, double hours, double rate})> kQuickOptions = [
+  (label: '2h · 1.5倍', hours: 2.0, rate: 1.5),
+  (label: '3h · 1.5倍', hours: 3.0, rate: 1.5),
+  (label: '10h · 2倍', hours: 10.0, rate: 2.0),
+  (label: '11h · 2倍', hours: 11.0, rate: 2.0),
+  (label: '11h · 3倍', hours: 11.0, rate: 3.0),
+  (label: '0h', hours: 0.0, rate: 0.0),
+];
+
+/// 关闭弹窗前主动收起键盘并释放焦点，避免残留输入法。
+void _hideKeyboard() {
+  FocusManager.instance.primaryFocus?.unfocus();
+  SystemChannels.textInput.invokeMethod('TextInput.hide');
+}
 
 /// 弹窗统一容器：屏幕中央显示（需求 1）。
 Future<void> showCenterDialog(BuildContext context, Widget content) {
@@ -241,20 +258,14 @@ Future<void> showDayDialog({
             spacing: 8,
             runSpacing: 8,
             children: [
-              for (final o in const [
-                (label: '2h · 1.5倍', hours: 2.0, rate: 1.5),
-                (label: '3h · 1.5倍', hours: 3.0, rate: 1.5),
-                (label: '10h · 2倍', hours: 10.0, rate: 2.0),
-                (label: '11h · 2倍', hours: 11.0, rate: 2.0),
-                (label: '11h · 3倍', hours: 11.0, rate: 3.0),
-                (label: '0h', hours: 0.0, rate: 0.0),
-              ])
+              for (final o in kQuickOptions)
                 Material(
                   color: softPrimary(context),
                   borderRadius: BorderRadius.circular(8),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(8),
                     onTap: () {
+                      _hideKeyboard();
                       store.records[key] = DayRecord(
                         hours: o.hours,
                         rateOverride: o.rate,
@@ -277,6 +288,7 @@ Future<void> showDayDialog({
           _SheetActions([
             // 保存与取消互换位置（此页面要求）
             DialogButton('保存', AppColors.save, Colors.white, () {
+              _hideKeyboard();
               final h = _parseDouble(hoursCtrl.text, 0).clamp(0.0, 1e9);
               final leave = _parseDouble(leaveCtrl.text, 0).clamp(0.0, 1e9);
               store.records[key] = DayRecord(
@@ -290,18 +302,21 @@ Future<void> showDayDialog({
               onChanged();
             }),
             DialogButton('删除', const Color(0xFFFFEFF1), AppColors.danger, () {
+              _hideKeyboard();
               store.records.remove(key);
               store.save();
               Navigator.of(context).pop();
               onChanged();
             }),
             DialogButton('休息', softPrimary(context), accent(context), () {
+              _hideKeyboard();
               store.records[key] = DayRecord(rest: true);
               store.save();
               Navigator.of(context).pop();
               onChanged();
             }),
             DialogButton('取消', const Color(0xFFF5F6F8), primary(context), () {
+              _hideKeyboard();
               Navigator.of(context).pop();
             }),
           ]),
