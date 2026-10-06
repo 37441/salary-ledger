@@ -276,6 +276,8 @@ class _CalendarPageState extends State<CalendarPage>
   }
 
   void _onCellTap(int y, int m, int d, String key) {
+    // 点击日历日期时取消批量输入框的选中/光标状态
+    hideKeyboard();
     if (widget.multiSelectMode) {
       final next = Set<String>.from(widget.selectedDates);
       if (next.contains(key)) {
