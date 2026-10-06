@@ -67,7 +67,9 @@ class _CalendarPageState extends State<CalendarPage>
     final keyboardInset = MediaQuery.of(context).viewInsets.bottom;
     return ListView(
       controller: _scroll,
-      padding: EdgeInsets.only(bottom: 96 + keyboardInset),
+      // 键盘弹出时底部留白压缩为 键盘高+16（紧凑）；收起时 96 避免被导航栏遮挡。
+      padding: EdgeInsets.only(
+          bottom: keyboardInset > 0 ? keyboardInset + 16 : 96),
       children: [
         _summaryCard(s),
         _monthControls(),
