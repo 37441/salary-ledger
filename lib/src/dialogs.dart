@@ -17,8 +17,8 @@ const List<({String label, double hours, double rate})> kQuickOptions = [
   (label: '0h', hours: 0.0, rate: 0.0),
 ];
 
-/// 关闭弹窗前主动收起键盘并释放焦点，避免残留输入法。
-void _hideKeyboard() {
+/// 主动收起键盘并释放焦点（弹窗关闭/离开输入区时调用，避免残留输入法）。
+void hideKeyboard() {
   FocusManager.instance.primaryFocus?.unfocus();
   SystemChannels.textInput.invokeMethod('TextInput.hide');
 }
@@ -265,7 +265,7 @@ Future<void> showDayDialog({
                   child: InkWell(
                     borderRadius: BorderRadius.circular(8),
                     onTap: () {
-                      _hideKeyboard();
+                      hideKeyboard();
                       store.records[key] = DayRecord(
                         hours: o.hours,
                         rateOverride: o.rate,
@@ -288,7 +288,7 @@ Future<void> showDayDialog({
           _SheetActions([
             // 保存与取消互换位置（此页面要求）
             DialogButton('保存', AppColors.save, Colors.white, () {
-              _hideKeyboard();
+              hideKeyboard();
               final h = _parseDouble(hoursCtrl.text, 0).clamp(0.0, 1e9);
               final leave = _parseDouble(leaveCtrl.text, 0).clamp(0.0, 1e9);
               store.records[key] = DayRecord(
@@ -302,21 +302,21 @@ Future<void> showDayDialog({
               onChanged();
             }),
             DialogButton('删除', const Color(0xFFFFEFF1), AppColors.danger, () {
-              _hideKeyboard();
+              hideKeyboard();
               store.records.remove(key);
               store.save();
               Navigator.of(context).pop();
               onChanged();
             }),
             DialogButton('休息', softPrimary(context), accent(context), () {
-              _hideKeyboard();
+              hideKeyboard();
               store.records[key] = DayRecord(rest: true);
               store.save();
               Navigator.of(context).pop();
               onChanged();
             }),
             DialogButton('取消', const Color(0xFFF5F6F8), primary(context), () {
-              _hideKeyboard();
+              hideKeyboard();
               Navigator.of(context).pop();
             }),
           ]),
@@ -355,9 +355,11 @@ Future<void> showSalaryDialog({
               size: 11, color: textMuted(context)),
           _SheetActions([
             DialogButton('取消', const Color(0xFFF5F6F8), primary(context), () {
+              hideKeyboard();
               Navigator.of(context).pop();
             }),
             DialogButton('保存', AppColors.save, Colors.white, () {
+              hideKeyboard();
               store.baseSalary = _parseDouble(baseCtrl.text, store.baseSalary);
               store.performanceRate = _parseDouble(perfCtrl.text, store.performanceRate);
               store.save();

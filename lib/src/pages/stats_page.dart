@@ -280,16 +280,19 @@ class _StatsPageState extends State<StatsPage>
               padding: const EdgeInsets.only(top: 12),
               child: AdaptiveRow([
                 DialogButton('取消', const Color(0xFFF5F6F8), primary(context), () {
+                  hideKeyboard();
                   Navigator.of(context).pop();
                 }),
                 if (oldName != null)
                   DialogButton('删除', const Color(0xFFFFEFF1), AppColors.danger, () {
+                    hideKeyboard();
                     items.remove(oldName);
                     widget.store.save();
                     Navigator.of(context).pop();
                     widget.onRefresh();
                   }),
                 DialogButton('保存', AppColors.save, Colors.white, () {
+                  hideKeyboard();
                   final name = nameCtrl.text.trim();
                   if (name.isEmpty) return;
                   if (oldName != null) items.remove(oldName);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../calc.dart';
 import '../dialogs.dart';
@@ -325,81 +326,86 @@ class _CalendarPageState extends State<CalendarPage>
               ],
             ),
             const SizedBox(height: 8),
-            AdaptiveRow([
-              Container(
-                decoration: BoxDecoration(
-                  color: panelColor(context),
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: border(context)),
-                ),
-                child: TextField(
-                  controller: _hoursCtrl,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  style: TextStyle(fontSize: 14, color: textMain(context)),
-                  onTap: () {
-                    // 键盘弹出后自动滚动到菜单底部，让输入框露出键盘上方（顶栏保持不动）
-                    Future.delayed(const Duration(milliseconds: 350), () {
-                      if (!mounted) return;
-                      if (_scroll.hasClients) {
-                        _scroll.animateTo(
-                          _scroll.position.maxScrollExtent,
-                          duration: const Duration(milliseconds: 240),
-                          curve: Curves.easeOut,
-                        );
-                      }
-                    });
-                  },
-                  decoration: InputDecoration(
-                    hintText: '小时',
-                    hintStyle: TextStyle(color: textMuted(context), fontSize: 12),
-                    isDense: true,
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-              // 类别选项栏：可点击选择（休息/倍率类别），宽度与操作按钮一致
-              SizedBox(
-                width: double.infinity,
-                child: Material(
-                  color: panelColor(context),
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      showBatchTypePicker(
-                        context: context,
-                        current: _typeLabel,
-                        onSelect: (v) => setState(() => _typeLabel = v),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: border(context)),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _typeLabel,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 12, color: textMain(context)),
-                            ),
-                          ),
-                          Icon(Icons.arrow_drop_down, size: 20, color: textMuted(context)),
-                        ],
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: panelColor(context),
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: border(context)),
+                    ),
+                    child: TextField(
+                      controller: _hoursCtrl,
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
+                      style: TextStyle(fontSize: 14, color: textMain(context)),
+                      onTap: () {
+                        // 键盘弹出后自动滚动到菜单底部，让输入框露出键盘上方（顶栏保持不动）
+                        Future.delayed(const Duration(milliseconds: 350), () {
+                          if (!mounted) return;
+                          if (_scroll.hasClients) {
+                            _scroll.animateTo(
+                              _scroll.position.maxScrollExtent,
+                              duration: const Duration(milliseconds: 240),
+                              curve: Curves.easeOut,
+                            );
+                          }
+                        });
+                      },
+                      decoration: InputDecoration(
+                        hintText: '小时',
+                        hintStyle: TextStyle(color: textMuted(context), fontSize: 12),
+                        isDense: true,
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                        border: InputBorder.none,
                       ),
                     ),
                   ),
                 ),
-              ),
-            ], gap: 6),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Material(
+                    color: panelColor(context),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        showBatchTypePicker(
+                          context: context,
+                          current: _typeLabel,
+                          onSelect: (v) => setState(() => _typeLabel = v),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: border(context)),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                _typeLabel,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 12, color: textMain(context)),
+                              ),
+                            ),
+                            Icon(Icons.arrow_drop_down, size: 20, color: textMuted(context)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 8),
+            // 快捷填写按钮（与工时弹窗一致），点击即批量应用
             // 快捷填写按钮（与工时弹窗一致），点击即批量应用
             Wrap(
               spacing: 8,
@@ -454,6 +460,14 @@ class _CalendarPageState extends State<CalendarPage>
       );
   }
 
+
+  /// 批量操作完成后：清空输入框内容并释放焦点（去除光标/键盘残留）。
+  void _resetBatchInput() {
+    _hoursCtrl.clear();
+    FocusManager.instance.primaryFocus?.unfocus();
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+  }
+
   /// 批量快捷填写：与工时弹窗的快捷按钮一致，对已选日期直接写入并结束多选。
   void _quickBatch(double hours, double rate) {
     final targets = List<String>.of(widget.selectedDates);
@@ -471,6 +485,7 @@ class _CalendarPageState extends State<CalendarPage>
     }
     widget.store.save();
     widget.onRefresh();
+    _resetBatchInput();
     showAppToast(context, '批量快捷填写完成');
   }
 
@@ -503,6 +518,7 @@ class _CalendarPageState extends State<CalendarPage>
     }
     widget.store.save();
     widget.onRefresh();
+    _resetBatchInput();
     showAppToast(context, deleteOnly ? '批量删除完成' : '批量修改完成');
   }
 
@@ -512,6 +528,7 @@ class _CalendarPageState extends State<CalendarPage>
     widget.store.save();
     widget.onExitMultiSelect();
     widget.onRefresh();
+    _resetBatchInput();
     showAppToast(context, '当前月份已清空');
   }
 

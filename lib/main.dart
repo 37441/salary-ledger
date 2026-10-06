@@ -307,6 +307,8 @@ class _HomePageState extends State<HomePage> {
       physics: const ClampingScrollPhysics(),
       onPageChanged: (i) {
         if (_tab != i) setState(() => _tab = i);
+        // 离开当前板块：释放输入框焦点/光标，防止误触发键盘
+        FocusManager.instance.primaryFocus?.unfocus();
       },
       children: [
         for (var i = 0; i < 4; i++) RepaintBoundary(child: _pageFor(i)),
