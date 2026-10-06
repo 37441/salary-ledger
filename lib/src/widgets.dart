@@ -75,9 +75,10 @@ Color recordStateColor(
 Color recordFillColor(BuildContext c, Color state) =>
     blendColor(panelColor(c), state, isDarkTheme(c) ? 0.22 : 0.14);
 
-/// 统一轻提示：居中偏下的深色圆角卡片（替换系统 SnackBar，风格与整体一致）。
+/// 统一轻提示：居中偏下的圆角卡片，背景跟随当前主题主色（深浅主题自动适配）。
 void showAppToast(BuildContext context, String msg) {
   final overlay = Overlay.of(context);
+  final bg = primary(context);
   final entry = OverlayEntry(
     builder: (_) => Positioned(
       left: 48,
@@ -90,8 +91,15 @@ void showAppToast(BuildContext context, String msg) {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.78),
+                color: bg,
                 borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Text(
                 msg,
