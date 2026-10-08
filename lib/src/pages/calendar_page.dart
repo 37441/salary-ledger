@@ -130,6 +130,8 @@ class _CalendarPageState extends State<CalendarPage>
     // 周一为第一天；原版 Java Calendar 以周日为 1，leading = (firstDay-2) 或 6。
     final leading = first.weekday == DateTime.monday ? 0 : first.weekday - 1;
     final days = SalaryCalc.daysInMonth(y, m);
+    // 字体放大时格子同步变高，让日期数字能随字号变大且不被 FittedBox 压缩（不遮挡）。
+    final scale = MediaQuery.textScalerOf(context).scale(1);
 
     return GridView.count(
       crossAxisCount: 7,
@@ -138,6 +140,7 @@ class _CalendarPageState extends State<CalendarPage>
       padding: const EdgeInsets.fromLTRB(4, 6, 4, 12),
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
+      childAspectRatio: 1.0 / (0.75 + 0.25 * scale),
       children: [
         for (var i = 0; i < leading; i++) const SizedBox.shrink(),
         for (var d = 1; d <= days; d++)
