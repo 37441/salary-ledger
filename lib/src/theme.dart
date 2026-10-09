@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 /// 7 套主题（对齐原 Android 版配色）。
 class AppThemes {
   static const List<String> names = [
-    '珊瑚红', '薄荷绿', '暖黄', '深色', '海盐蓝', '紫藤', '石墨灰', '设计绿',
+    '薪时蓝金', '薄荷绿', '暖黄', '深色', '海盐蓝', '紫藤', '石墨灰', '设计绿',
   ];
 
   static const List<Color> primary = [
-    Color(0xFFB94B49), Color(0xFF12A878), Color(0xFFF6821E),
+    Color(0xFF1F3D5C), Color(0xFF12A878), Color(0xFFF6821E),
     Color(0xFF517094), Color(0xFF2B84BC), Color(0xFF7E5FBE),
     Color(0xFF4A5460), Color(0xFF00CB0D),
   ];
 
   static const List<Color> accent = [
-    Color(0xFFD75F59), Color(0xFF36C68D), Color(0xFFFFB831),
+    Color(0xFFD9A441), Color(0xFF36C68D), Color(0xFFFFB831),
     Color(0xFF7EA5CC), Color(0xFF4EB2CD), Color(0xFFB17DD3),
     Color(0xFF6B7989), Color(0xFF1FB954),
   ];
@@ -22,13 +22,13 @@ class AppThemes {
   /// 深色主题（索引 3）保持深色。
   /// 设计绿（索引 7）：对齐 ui-design 规范 —— 浅色页底 + 白卡片。
   static const List<Color> page = [
-    Color(0xFFF5F6F8), Color(0xFFF5F6F8), Color(0xFFF5F6F8),
+    Color(0xFFF6F3ED), Color(0xFFF5F6F8), Color(0xFFF5F6F8),
     Color(0xFF12171F), Color(0xFFF5F6F8), Color(0xFFF5F6F8),
     Color(0xFFF5F6F8), Color(0xFFF5F6F8),
   ];
 
   static const List<Color> hero = [
-    Color(0xFFFCE8E5), Color(0xFFDFF7EB), Color(0xFFFFEBC4),
+    Color(0xFFE4EDF5), Color(0xFFDFF7EB), Color(0xFFFFEBC4),
     Color(0xFF222C39), Color(0xFFDEF1FA), Color(0xFFEDE2F8),
     Color(0xFFE2E8EE), Color(0xFFD6FAD1),
   ];
@@ -59,7 +59,7 @@ class AppThemes {
   static Color softThemeColor(int theme) {
     switch (theme) {
       case 0:
-        return const Color(0xFFF8E7E5);
+        return const Color(0xFFE4EDF4);
       case 1:
         return const Color(0xFFDBF5EB);
       case 2:

@@ -82,7 +82,7 @@ class AppStore {
     glassOpacityNotifier.value = _glassOpacity;
     fontScaleNotifier.value = _fontScale;
     _theme = _prefs.getInt(_kTheme) ?? 0;
-    if (_theme < 0 || _theme >= 7) _theme = 0;
+    if (_theme < 0 || _theme >= 8) _theme = 0;
     themeNotifier.value = _theme;
 
     records = _decodeRecords(_prefs.getString(_kRecords) ?? '{}');
