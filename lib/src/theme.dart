@@ -1,41 +1,46 @@
 import 'package:flutter/material.dart';
 
-/// 7 套主题（对齐原 Android 版配色）。
+/// 8 套主题：默认「miuix 蓝」对齐 Miuix（MIUI 设计语言）主色；
+/// 其余保留原有配色供切换。
 class AppThemes {
   static const List<String> names = [
-    '薪时蓝金', '薄荷绿', '暖黄', '深色', '海盐蓝', '紫藤', '石墨灰', '设计绿',
+    'miuix 蓝', '薄荷绿', '暖黄', '深色', '海盐蓝', '紫藤', '石墨灰', '设计绿',
   ];
 
+  /// 索引 0 为 Miuix 主色 #3482FF（浅色）/ #277AF7（深色）。
   static const List<Color> primary = [
-    Color(0xFF1F3D5C), Color(0xFF12A878), Color(0xFFF6821E),
-    Color(0xFF517094), Color(0xFF2B84BC), Color(0xFF7E5FBE),
+    Color(0xFF3482FF), Color(0xFF12A878), Color(0xFFF6821E),
+    Color(0xFF277AF7), Color(0xFF2B84BC), Color(0xFF7E5FBE),
     Color(0xFF4A5460), Color(0xFF00CB0D),
   ];
 
+  /// 索引 0 强调色取 Miuix primaryContainer 一档深蓝，浅色下可读。
   static const List<Color> accent = [
-    Color(0xFFD9A441), Color(0xFF36C68D), Color(0xFFFFB831),
-    Color(0xFF7EA5CC), Color(0xFF4EB2CD), Color(0xFFB17DD3),
+    Color(0xFF277AF7), Color(0xFF36C68D), Color(0xFFFFB831),
+    Color(0xFF338FE4), Color(0xFF4EB2CD), Color(0xFFB17DD3),
     Color(0xFF6B7989), Color(0xFF1FB954),
   ];
 
-  /// 浅色主题页面背景统一为冷灰白 #F5F6F8（参考设计图 1），
-  /// 深色主题（索引 3）保持深色。
-  /// 设计绿（索引 7）：对齐 ui-design 规范 —— 浅色页底 + 白卡片。
+  /// 页面底色：默认主题对齐 Miuix surface #F7F7F7，白卡片浮于其上；
+  /// 深色主题（索引 3）对齐 Miuix 深色背景 #242424。
   static const List<Color> page = [
-    Color(0xFFF6F3ED), Color(0xFFF5F6F8), Color(0xFFF5F6F8),
-    Color(0xFF12171F), Color(0xFFF5F6F8), Color(0xFFF5F6F8),
+    Color(0xFFF7F7F7), Color(0xFFF5F6F8), Color(0xFFF5F6F8),
+    Color(0xFF242424), Color(0xFFF5F6F8), Color(0xFFF5F6F8),
     Color(0xFFF5F6F8), Color(0xFFF5F6F8),
   ];
 
+  /// 卡片渐变底色：默认主题取 Miuix tertiaryContainer 浅蓝。
   static const List<Color> hero = [
-    Color(0xFFE4EDF5), Color(0xFFDFF7EB), Color(0xFFFFEBC4),
-    Color(0xFF222C39), Color(0xFFDEF1FA), Color(0xFFEDE2F8),
+    Color(0xFFEAF2FF), Color(0xFFDFF7EB), Color(0xFFFFEBC4),
+    Color(0xFF2B3B54), Color(0xFFDEF1FA), Color(0xFFEDE2F8),
     Color(0xFFE2E8EE), Color(0xFFD6FAD1),
   ];
 
+  /// 卡片/面板色：默认主题纯白（Miuix surfaceContainer）；
+  /// 深色主题用 Miuix 深色 surfaceContainer。
   static const List<Color> panel = [
     Colors.white, Colors.white, Colors.white,
-    Color(0xFF1C232E), Colors.white, Colors.white, Colors.white,
+    Color(0xFF242424), Colors.white, Colors.white, Colors.white,
     Colors.white,
   ];
 
@@ -43,7 +48,7 @@ class AppThemes {
   static bool isDark(int theme) => theme == 3;
 
   static const Color textMainLight = Color(0xFF191F26);
-  static const Color textMutedLight = Color(0xFF7E8791);
+  static const Color textMutedLight = Color(0xFF8C93B0);
   static const Color textMainDark = Color(0xFFEEF2F6);
   static const Color textMutedDark = Color(0xFFA6B0BC);
 
@@ -53,19 +58,20 @@ class AppThemes {
   static Color textMuted(int theme) =>
       isDark(theme) ? textMutedDark : textMutedLight;
 
+  /// 分隔线：对齐 Miuix dividerLine（浅 #E0E0E0 / 深 #393939）。
   static Color border(int theme) =>
-      isDark(theme) ? const Color(0xFF3F5B47) : const Color(0xFFE0E6DC);
+      isDark(theme) ? const Color(0xFF393939) : const Color(0xFFE0E0E0);
 
   static Color softThemeColor(int theme) {
     switch (theme) {
       case 0:
-        return const Color(0xFFE4EDF4);
+        return const Color(0xFFEAF2FF);
       case 1:
         return const Color(0xFFDBF5EB);
       case 2:
         return const Color(0xFFFFEDCC);
       case 3:
-        return const Color(0xFF2E3949);
+        return const Color(0xFF2B3B54);
       case 4:
         return const Color(0xFFDBEFF9);
       case 5:
@@ -117,12 +123,12 @@ class UiTokens {
   static const double fontAux = 14; // 分组标题(Medium) / 段落小字
   static const double fontTag = 12; // Tab / 角标 / 时间戳
 
-  // —— 圆角（五档制） ——
+  // —— 圆角（对齐 Miuix：卡片 16、按钮 16、输入框 16） ——
   static const double cornerXs = 4; // 小标签
-  static const double cornerS = 8; // 输入框 / 小按钮
-  static const double cornerM = 12; // 卡片 / 弹窗 / 大按钮
-  static const double cornerL = 16; // 底部弹层顶部 / 抽屉
-  static const double cornerXl = 28; // 全圆：头像 / FAB / 胶囊
+  static const double cornerS = 8; // 日历格子 / 小元素
+  static const double cornerM = 16; // 卡片 / 弹窗 / 大按钮 / 输入框
+  static const double cornerL = 20; // 底部弹层顶部 / 抽屉
+  static const double cornerXl = 30; // 全圆：头像 / FAB / 胶囊
 
   // —— 间距（8dp 网格） ——
   static const double spaceS = 8;

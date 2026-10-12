@@ -100,7 +100,7 @@ class _SettingsPageState extends State<SettingsPage>
                           const SizedBox(height: 6),
                           Row(
                             children: [
-                              const Icon(Icons.opacity, size: 16, color: Color(0xFF2B84BC)),
+                              Icon(Icons.opacity, size: 16, color: accent(context)),
                               const SizedBox(width: 8),
                               PanelText('透明度', size: 13, color: textMain(context)),
                               Expanded(
@@ -209,15 +209,14 @@ class _SettingsPageState extends State<SettingsPage>
     );
   }
 
-  /// 设置项行：左浅蓝圆角图标块 + 标题/副标题 + 右箭头或开关（参考设计图 1）。
-  static const Color _iconBg = Color(0xFFD8E3EE);
-  static const Color _iconFg = Color(0xFF2B84BC);
-
+  /// 设置项行：左主题浅色圆角图标块 + 标题/副标题 + 右箭头或开关（Miuix 风格）。
   Widget _tile(String title, IconData icon, VoidCallback onTap,
       {String? subtitle, bool isSwitch = false, bool switchValue = false,
       ValueChanged<bool>? onSwitchChanged}) {
+    final iconBg = softPrimary(context);
+    final iconFg = primary(context);
     return InkWell(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(16),
       onTap: isSwitch ? null : onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 2),
@@ -227,10 +226,10 @@ class _SettingsPageState extends State<SettingsPage>
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                color: _iconBg,
+                color: iconBg,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, size: 20, color: _iconFg),
+              child: Icon(icon, size: 20, color: iconFg),
             ),
             const SizedBox(width: 12),
             Expanded(

@@ -30,7 +30,7 @@ Future<void> showCenterDialog(BuildContext context, Widget content) {
     barrierDismissible: true,
     builder: (_) => Dialog(
       backgroundColor: panelColor(context),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       child: RepaintBoundary(
         child: ConstrainedBox(
@@ -68,7 +68,7 @@ class SheetHeader extends StatelessWidget {
   }
 }
 
-/// 弹窗输入框（小数键盘）。
+/// 弹窗输入框（小数键盘，Miuix 16dp 圆角）。
 class AppInput extends StatelessWidget {
   final TextEditingController controller;
 
@@ -79,7 +79,7 @@ class AppInput extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: panelColor(context),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: border(context), width: 1),
       ),
       child: TextField(
@@ -111,7 +111,7 @@ class _SheetActions extends StatelessWidget {
   }
 }
 
-/// 弹窗按钮。
+/// 弹窗按钮（Miuix 16dp 圆角）。
 class DialogButton extends StatelessWidget {
   final String text;
   final Color bg;
@@ -124,9 +124,9 @@ class DialogButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: bg,
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: BorderRadius.circular(16),
       child: InkWell(
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(16),
         onTap: onTap,
         child: Container(
           alignment: Alignment.center,
@@ -196,15 +196,15 @@ Future<void> showDayDialog({
                     padding: EdgeInsets.only(left: r == 1.5 ? 0 : 6),
                     child: Material(
                       color: selectedRate == r ? primary(context) : panelColor(context),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(16),
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(16),
                         onTap: () => setState(() => selectedRate = r),
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: selectedRate == r ? primary(context) : border(context),
                             ),
@@ -261,9 +261,9 @@ Future<void> showDayDialog({
               for (final o in kQuickOptions)
                 Material(
                   color: softPrimary(context),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(16),
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(16),
                     onTap: () {
                       hideKeyboard();
                       store.records[key] = DayRecord(

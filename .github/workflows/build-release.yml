@@ -24,14 +24,9 @@ jobs:
         with:
           flutter-version: '3.27.4'
 
-      # 使用与本地 Debug 包相同的签名密钥，保证 release 可覆盖安装、数据不丢。
-      # 密钥内容放在仓库 Settings → Secrets and variables → Actions 的
-      # ANDROID_DEBUG_KEYSTORE（`base64 -w0 ~/.android/debug.keystore` 的输出）。
-      - name: Restore debug keystore
-        run: |
-          mkdir -p ~/.android
-          echo "${{ secrets.ANDROID_DEBUG_KEYSTORE }}" | base64 -d > ~/.android/debug.keystore
-
+      # 固定签名：keystore 已入库（android/keystore/salary-release.keystore），
+      # build.gradle 从 android/key.properties 读取，每次构建与本地使用同一把签名，
+      # 保证任意版本之间可覆盖安装、签名一致。
       - name: Flutter pub get
         run: flutter pub get
 

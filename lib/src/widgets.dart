@@ -118,7 +118,7 @@ void showAppToast(BuildContext context, String msg) {
   });
 }
 
-/// 圆角卡片容器（大圆角扁平风，参考设计图：16-24px）。
+/// 圆角卡片容器（Miuix 风格：16dp 圆角白卡浮于浅灰底）。
 class Panel extends StatelessWidget {
   final Widget child;
   final EdgeInsets padding;
@@ -130,7 +130,7 @@ class Panel extends StatelessWidget {
     required this.child,
     this.padding = const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
     this.color,
-    this.radius = const BorderRadius.all(Radius.circular(18)),
+    this.radius = const BorderRadius.all(Radius.circular(16)),
   });
 
   @override
@@ -223,7 +223,7 @@ class AdaptiveRow extends StatelessWidget {
   }
 }
 
-/// 小按钮。
+/// 小按钮（Miuix：16dp 圆角）。
 class SmallButton extends StatelessWidget {
   final String text;
   final Color bg;
@@ -233,7 +233,7 @@ class SmallButton extends StatelessWidget {
   final double radius;
 
   const SmallButton(this.text, this.bg, this.onTap,
-      {super.key, this.textColor, this.fontSize = 13, this.radius = 8});
+      {super.key, this.textColor, this.fontSize = 13, this.radius = 16});
 
   @override
   Widget build(BuildContext context) {
@@ -261,7 +261,7 @@ class SmallButton extends StatelessWidget {
   }
 }
 
-/// Hero 渐变卡片。
+/// Hero 渐变卡片（Miuix：16dp 圆角）。
 class HeroCard extends StatelessWidget {
   final String label;
   final String value;
@@ -280,7 +280,7 @@ class HeroCard extends StatelessWidget {
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,7 +320,7 @@ class SummaryMetric extends StatelessWidget {
   }
 }
 
-/// 圆角小指标卡（年度汇总/工资信息网格共用）。
+/// 圆角小指标卡（年度汇总/工资信息网格共用，Miuix 16dp 圆角）。
 class YearMetric extends StatelessWidget {
   final String label;
   final String value;
@@ -335,7 +335,7 @@ class YearMetric extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
       decoration: BoxDecoration(
         color: panelColor(context),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

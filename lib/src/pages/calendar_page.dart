@@ -87,7 +87,7 @@ class _CalendarPageState extends State<CalendarPage>
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: heroColor(context),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
@@ -338,7 +338,7 @@ class _CalendarPageState extends State<CalendarPage>
                   child: Container(
                     decoration: BoxDecoration(
                       color: panelColor(context),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: border(context)),
                     ),
                     child: TextField(
@@ -374,9 +374,9 @@ class _CalendarPageState extends State<CalendarPage>
                 Expanded(
                   child: Material(
                     color: panelColor(context),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(16),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(16),
                       onTap: () {
                         showBatchTypePicker(
                           context: context,
@@ -387,7 +387,7 @@ class _CalendarPageState extends State<CalendarPage>
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: border(context)),
                         ),
                         child: Row(
@@ -411,7 +411,6 @@ class _CalendarPageState extends State<CalendarPage>
             ),
             const SizedBox(height: 8),
             // 快捷填写按钮（与工时弹窗一致），点击即批量应用
-            // 快捷填写按钮（与工时弹窗一致），点击即批量应用
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -419,9 +418,9 @@ class _CalendarPageState extends State<CalendarPage>
                 for (final o in kQuickOptions)
                   Material(
                     color: softPrimary(context),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(16),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(16),
                       onTap: () {
                         FocusManager.instance.primaryFocus?.unfocus();
                         _quickBatch(o.hours, o.rate);

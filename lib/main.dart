@@ -469,7 +469,7 @@ class _HomePageState extends State<HomePage> {
     final capsule = Container(
       margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
             color: isDarkTheme(context)
@@ -481,7 +481,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(28),
         child: glass
             ? BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
