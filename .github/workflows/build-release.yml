@@ -24,14 +24,26 @@ jobs:
         with:
           flutter-version: '3.27.4'
 
-      # 固定签名：keystore 已入库（android/keystore/salary-release.keystore），
-      # build.gradle 从 android/key.properties 读取，每次构建与本地使用同一把签名，
-      # 保证任意版本之间可覆盖安装、签名一致。
+      # 固定签名：keystore 存于仓库 Secrets（KEYSTORE_BASE64），构建时解码还原，
+      # 口令经环境变量注入 build.gradle；keystore 与口令均不入库，
+      # 每次构建与本地使用同一把签名，保证任意版本之间可覆盖安装、签名一致。
+      - name: Restore keystore from secrets
+        run: |
+          mkdir -p android/keystore
+          echo "$KEYSTORE_B64" | base64 -d > android/keystore/salary-release.keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+
       - name: Flutter pub get
         run: flutter pub get
 
       - name: Build release APK (arm64)
         run: flutter build apk --release --target-platform android-arm64
+        env:
+          STORE_FILE: android/keystore/salary-release.keystore
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
